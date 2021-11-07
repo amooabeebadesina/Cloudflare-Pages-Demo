@@ -1,8 +1,56 @@
 .app {
     background-color: #efefdf;
-    height: 100vh;
+    min-height: 100vh;
+}
+
+.main-content {
+    margin-top: 50px;
+}
+
+.post-create-btn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.post-create-btn > button {
+    font-weight: bold;
 }
 
 .posts-container {
-    margin-top: 50px;
+    display: flex;
+}
+
+.posts-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.post-card {
+    max-height: 20rem;
+    width: 24%;
+    margin: 20px auto 20px auto;
+}
+
+.post-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0 !important;
+}
+
+.post-card__author {
+    font-size: 14px;
+}
+
+.post-card__stats {
+    display: flex;
+    justify-content: space-between;
+    max-width: 40%;
+}
+
+.post-card__stat {
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
 }
