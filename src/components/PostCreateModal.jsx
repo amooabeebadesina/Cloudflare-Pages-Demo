@@ -4,18 +4,62 @@ import PropTypes from "prop-types";
 
 const PostCreateModal = (props) => {
 
-    const { show, handleClose } = props;
+    const { show, handleClose, onShowToast, onPostAdd } = props;
 
     const [validated, setValidated] = useState(false);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [username, setUsername] = useState('');
+
+    const isFormValid = () => {
+        return !(!title || !content || !username);
+    }
+
+    const clearForm = () => {
+        setTitle('');
+        setContent('');
+        setContent('');
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.currentTarget;
+        switch (name) {
+            case 'title':
+                setTitle(value);
+                break;
+            case 'content':
+                setContent(value);
+                break;
+            default:
+                setUsername(value);
+                break;
+        }
+        if (isFormValid()) {
+            setValidated(true);
+        } else {
+            setValidated(false);
+        }
+    }
 
     const handleSubmit = (event) => {
-        const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
-        if (form.checkValidity() === false) {
-            setValidated(false);
-        } else {
-            setValidated(true);
+        const data = { title, username, content };
+        if (validated) {
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/posts`, {
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    onShowToast({ type: 'success', message: 'Post added successfully'});
+                    onPostAdd();
+                    clearForm();
+                    handleClose();
+                })
+                .catch((error) => {
+                    onShowToast({ type: 'danger', message: 'Error adding post'});
+                });
         }
     };
 
@@ -26,20 +70,20 @@ const PostCreateModal = (props) => {
                 <Modal.Title>Add New Post</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form validated={validated} onSubmit={handleSubmit}>
                     <Form.Group className="mb-3" controlId="title">
                         <Form.Label>Title</Form.Label>
-                        <Form.Control type="text" placeholder="Title of the post" required />
+                        <Form.Control type="text" name="title" placeholder="Title of the post" value={title} onChange={handleChange} required />
                         <Form.Control.Feedback type="invalid">Title is required</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Content</Form.Label>
-                        <Form.Control as="textarea" rows={10} required/>
+                        <Form.Control as="textarea" name="content" rows={10} value={content} onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">Content is required</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Post As</Form.Label>
-                        <Form.Control type="text" placeholder="john_doe" required />
+                        <Form.Control type="text" name="username" placeholder="john_doe" value={username} onChange={handleChange} required />
                         <Form.Control.Feedback type="invalid">Username is required</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group style={{'textAlign': 'center'}}>

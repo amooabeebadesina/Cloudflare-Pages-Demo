@@ -23,6 +23,7 @@
 .posts-content {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .post-card {
